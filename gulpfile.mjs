@@ -36,15 +36,15 @@ const buildBase = (f) => () => {
       gulp.dest((file) => {
         const current = path.dirname(path.relative("./src", file.path));
         if (current === ".") {
-          return "./out/";
+          return "./dist/";
         }
         const newName = [
           ...current.split(path.sep),
           path.basename(file.path),
         ].join("-");
         file.path = newName;
-        file.dirname = "./out/";
-        return "./out/";
+        file.dirname = "./dist/";
+        return "./dist/";
       })
     );
 };
