@@ -6,4 +6,4 @@ services:
       - "8080:80"
     volumes:
       - ./debug.html:/usr/share/nginx/html/index.html
-      - ./out:/usr/share/nginx/html/out
+      - ./dist:/usr/share/nginx/html/dist
