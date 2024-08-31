@@ -3,7 +3,7 @@
 <head>
     <template>
         <style>
-            ::slotted(*:not(:first-child)) {
+            ::slotted(*:not(*[part=details])) {
                 animation: var(--animation-name);
             }
         </style>
@@ -45,8 +45,8 @@
                 super()
                 const template = document.createElement("template");
                 template.innerHTML = __MARKER__;
-                shadow.appendChild(template.content.cloneNode(true))
                 const shadow = this.attachShadow({ mode: "closed" })
+                shadow.appendChild(template.content.cloneNode(true))
                 const detailElement = shadow.querySelector("details")
                 const slotElement = detailElement.children[1];
                 this.detailElement = detailElement;
@@ -65,6 +65,7 @@
                         return
                     }
                     const animOption = getAnimOption(target)
+                    console.log(animOption)
                     if (this.detailElement.getAttribute("open") != null) {
                         target.style.setProperty("--animation-name", closeKeyframe)
                         const animating = target.animate(closingAnim(target), animOption)
