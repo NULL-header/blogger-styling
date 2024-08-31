@@ -45,7 +45,6 @@
                 super()
                 const template = document.createElement("template");
                 template.innerHTML = __MARKER__;
-                const shadow = this.attachShadow({ mode: "closed" })
                 shadow.appendChild(template.content.cloneNode(true))
                 this.shadow = shadow;
                 const detailElement = this.shadow.querySelector("details")
