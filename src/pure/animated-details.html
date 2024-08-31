@@ -46,8 +46,8 @@
                 const template = document.createElement("template");
                 template.innerHTML = __MARKER__;
                 shadow.appendChild(template.content.cloneNode(true))
-                this.shadow = shadow;
-                const detailElement = this.shadow.querySelector("details")
+                const shadow = this.attachShadow({ mode: "closed" })
+                const detailElement = shadow.querySelector("details")
                 const slotElement = detailElement.children[1];
                 this.detailElement = detailElement;
                 this.slotElement = slotElement;
