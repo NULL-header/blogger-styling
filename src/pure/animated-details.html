@@ -1,0 +1,61 @@
+<html schema="component">
+
+<head>
+    <template>
+        <style>
+            ::slotted(*:not(:first-child)) {
+                animation: var(--animation-name);
+            }
+        </style>
+        <details part="details">
+            <summary part="summary">
+                <slot name="summary"></slot>
+            </summary>
+            <slot></slot>
+        </details>
+    </template>
+    <script>
+        class AnimatedDetails extends HTMLElement {
+            connectedCallback() {
+                const template = document.createElement("template");
+                template.innerHTML = __MARKER__;
+                const shadow = this.attachShadow({ mode: "closed" })
+                shadow.appendChild(template.content.cloneNode(true))
+
+                const detailElement = shadow.querySelector("details")
+                const detailChildElement = detailElement.children[1];
+                const openKeyframe = this.dataset.openKeyframe;
+                const closeKeyframe = this.dataset.closeKeyframe;
+                console.log(closeKeyframe, openKeyframe)
+                if (openKeyframe != null && closeKeyframe != null) {
+                    console.log("set callback")
+                    detailElement.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        if (detailElement.getAttribute("open") != null) {
+                            detailChildElement.style.setProperty("--animation-name", closeKeyframe)
+                            const onEnd = () => {
+                                detailElement.removeAttribute("open")
+                                detailChildElement.removeEventListener("animationend", onEnd)
+                                detailChildElement.removeEventListener("animationcancel", onCancel)
+                            }
+                            const onCancel = () => {
+                                detailChildElement.removeEventListener("animationend", onEnd)
+                                detailChildElement.removeEventListener("animationcancel", onCancel)
+                            }
+
+                            detailChildElement.addEventListener("animationend", onEnd)
+                            detailChildElement.addEventListener("animationcancel", onCancel)
+                            return
+                        }
+                        detailElement.setAttribute("open", "");
+                        detailChildElement.style.setProperty("--animation-name", openKeyframe)
+                        console.log("open!")
+                    })
+                }
+            }
+        }
+        customElements.define("animated-details", AnimatedDetails)
+    </script>
+</head>
+
+</html>
