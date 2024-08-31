@@ -15,43 +15,62 @@
         </details>
     </template>
     <script>
+        const closingAnim = (target) => [
+            {
+                height: target.offsetHeight + "px",
+            },
+            {
+                height: 0,
+            },
+        ];
+
+        // アコーディオンを開くときのキーフレーム
+        const openingAnim = (target) => [
+            {
+                height: 0,
+            },
+            {
+                height: target.offsetHeight + "px",
+            },
+        ];
+
         class AnimatedDetails extends HTMLElement {
-            connectedCallback() {
+            constructor() {
+                super()
                 const template = document.createElement("template");
                 template.innerHTML = __MARKER__;
                 const shadow = this.attachShadow({ mode: "closed" })
                 shadow.appendChild(template.content.cloneNode(true))
-
-                const detailElement = shadow.querySelector("details")
-                const detailChildElement = detailElement.children[1];
+                this.shadow = shadow;
+                const detailElement = this.shadow.querySelector("details")
+                const slotElement = detailElement.children[1];
+                this.detailElement = detailElement;
+                this.slotElement = slotElement;
+            }
+            connectedCallback() {
                 const openKeyframe = this.dataset.openKeyframe;
                 const closeKeyframe = this.dataset.closeKeyframe;
-                console.log(closeKeyframe, openKeyframe)
-                if (openKeyframe != null && closeKeyframe != null) {
-                    console.log("set callback")
-                    detailElement.addEventListener("click", (e) => {
-                        e.preventDefault();
-                        if (detailElement.getAttribute("open") != null) {
-                            detailChildElement.style.setProperty("--animation-name", closeKeyframe)
-                            const onEnd = () => {
-                                detailElement.removeAttribute("open")
-                                detailChildElement.removeEventListener("animationend", onEnd)
-                                detailChildElement.removeEventListener("animationcancel", onCancel)
-                            }
-                            const onCancel = () => {
-                                detailChildElement.removeEventListener("animationend", onEnd)
-                                detailChildElement.removeEventListener("animationcancel", onCancel)
-                            }
-
-                            detailChildElement.addEventListener("animationend", onEnd)
-                            detailChildElement.addEventListener("animationcancel", onCancel)
-                            return
-                        }
-                        detailElement.setAttribute("open", "");
-                        detailChildElement.style.setProperty("--animation-name", openKeyframe)
-                        console.log("open!")
-                    })
+                if (openKeyframe == null || closeKeyframe == null) {
+                    return
                 }
+                this.detailElement.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const target = this.slotElement.assignedElements()[0];
+                    if (target == null) {
+                        return
+                    }
+                    if (this.detailElement.getAttribute("open") != null) {
+                        target.style.setProperty("--animation-name", closeKeyframe)
+                        const animating = target.animate(closingAnim(target), { duration: 300, easing: "ease-in-out" })
+                        animating.addEventListener("finish", () => {
+                            this.detailElement.removeAttribute("open")
+                        })
+                        return
+                    }
+                    this.detailElement.setAttribute("open", "");
+                    target.style.setProperty("--animation-name", openKeyframe)
+                    const animating = target.animate(openingAnim(target), { duration: 300, easing: "ease-in-out" })
+                })
             }
         }
         customElements.define("animated-details", AnimatedDetails)
