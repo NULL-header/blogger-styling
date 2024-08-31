@@ -42,7 +42,6 @@ const buildBase = (f) => () => {
           ...current.split(path.sep),
           path.basename(file.path),
         ].join("-");
-        console.log(newName);
         file.path = newName;
         file.dirname = "./out/";
         return "./out/";
