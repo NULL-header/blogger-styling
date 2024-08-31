@@ -33,6 +33,13 @@
             },
         ];
 
+        const getAnimOption = (target) => {
+            const style = getComputedStyle(target)
+            const duration = (style.animationDuration.slice(0, -1)) * 1000;
+            const easing = style.animationTimingFunction;
+            return { duration, easing, }
+        }
+
         class AnimatedDetails extends HTMLElement {
             constructor() {
                 super()
@@ -58,9 +65,10 @@
                     if (target == null) {
                         return
                     }
+                    const animOption = getAnimOption(target)
                     if (this.detailElement.getAttribute("open") != null) {
                         target.style.setProperty("--animation-name", closeKeyframe)
-                        const animating = target.animate(closingAnim(target), { duration: 300, easing: "ease-in-out" })
+                        const animating = target.animate(closingAnim(target), animOption)
                         animating.addEventListener("finish", () => {
                             this.detailElement.removeAttribute("open")
                         })
@@ -68,7 +76,7 @@
                     }
                     this.detailElement.setAttribute("open", "");
                     target.style.setProperty("--animation-name", openKeyframe)
-                    const animating = target.animate(openingAnim(target), { duration: 300, easing: "ease-in-out" })
+                    const animating = target.animate(openingAnim(target), animOption)
                 })
             }
         }
