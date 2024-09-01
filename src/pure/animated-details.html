@@ -3,15 +3,16 @@
 <head>
     <template>
         <style>
-            ::slotted(*) {
-                animation: var(--animation-name);
+            ::slotted(*:not([slot=summary])) {
+                /* ::slotted(*) { */
+                animation-name: var(--animation-name);
             }
         </style>
         <details part="details">
             <summary part="summary">
                 <slot name="summary"></slot>
             </summary>
-            <slot part="detail_container"></slot>
+            <slot></slot>
         </details>
     </template>
     <script>
@@ -51,8 +52,6 @@
                 const slotElement = detailElement.children[1];
                 this.detailElement = detailElement;
                 this.slotElement = slotElement;
-                this.slotted = undefined;
-                // this.containerElement = detailElement.querySelector("div[part=detail_container]")
             }
             connectedCallback() {
                 const openKeyframe = this.dataset.openKeyframe;
@@ -63,7 +62,6 @@
                 this.detailElement.addEventListener("click", (e) => {
                     e.preventDefault();
                     const target = this.slotElement.assignedElements()[0];
-                    // const target = this.containerElement;
                     console.log(target)
                     if (target == null) {
                         return
