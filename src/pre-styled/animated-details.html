@@ -6,45 +6,36 @@
             @keyframes openAnim {
                 from {
                     opacity: 0;
-                    /* transform: translateY(100%); */
+                    transform: translateY(-100%);
                 }
 
                 to {
                     opacity: 1;
-                    /* transform: translateY(99%); */
+                    transform: translateY(0%);
                 }
             }
 
             @keyframes closeAnim {
                 from {
                     opacity: 1;
-                    /* transform: translateY(99%); */
+                    transform: translateY(0%);
                 }
 
                 to {
                     opacity: 0;
-                    /* transform: translateY(100%); */
+                    transform: translateY(-100%);
                 }
-            }
-
-            ::slotted(*) {
-                animation-duration: 200ms;
-                animation-timing-function: ease-in-out;
-            }
-
-            animated-details::part(detail_container)>* {
-                animation-duration: 200ms;
-                animation-timing-function: ease-in-out;
             }
 
             .outer {
                 animation-duration: 200ms;
                 animation-timing-function: ease-in-out;
+                margin: 0;
             }
         </style>
         <animated-details data-open-keyframe="openAnim" data-close-keyframe="closeAnim">
             <span slot="summary"></span>
-            <div class="outer">
+            <div class="outer" part="content-outer">
                 <slot part="content"></slot>
             </div>
         </animated-details>
