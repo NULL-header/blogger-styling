@@ -1,0 +1,65 @@
+<html schema="component">
+
+<head>
+    <template>
+        <style>
+            @keyframes openAnim {
+                from {
+                    opacity: 0;
+                    /* transform: translateY(100%); */
+                }
+
+                to {
+                    opacity: 1;
+                    /* transform: translateY(0); */
+                }
+            }
+
+            @keyframes closeAnim {
+                from {
+                    opacity: 1;
+                    /* transform: translateY(0); */
+                }
+
+                to {
+                    opacity: 0;
+                    /* transform: translateY(100%); */
+                }
+            }
+
+            animated-details::part(detail_container) {
+                animation-duration: 200ms;
+                animation-timing-function: ease-in-out;
+            }
+        </style>
+        <animated-details data-open-keyframe="openAnim" data-close-keyframe="closeAnim">
+            <span slot="summary"></span>
+            <slot></slot>
+        </animated-details>
+    </template>
+    <script>
+        import "./pure-animated-details.js";
+
+        class AnimatedDetails extends HTMLElement {
+            constructor() {
+                super()
+                const template = document.createElement("template");
+                template.innerHTML = __MARKER__;
+                const shadow = this.attachShadow({ mode: "closed" })
+                shadow.appendChild(template.content.cloneNode(true))
+                const summary = shadow.querySelector("span")
+                this.summary = summary;
+            }
+
+            connectedCallback() {
+                const title = this.dataset.title;
+                console.log(title)
+                if (title == null) return;
+                this.summary.innerHTML = title;
+            }
+        }
+        customElements.define("pre-styled-animated-details", AnimatedDetails)
+    </script>
+</head>
+
+</html>
