@@ -4,7 +4,6 @@
     <template>
         <style>
             ::slotted(*:not([slot=summary])) {
-                /* ::slotted(*) { */
                 animation-name: var(--animation-name);
             }
         </style>
@@ -46,12 +45,13 @@
                 super()
                 const template = document.createElement("template");
                 template.innerHTML = __MARKER__;
-                const shadow = this.attachShadow({ mode: "closed" })
+                const shadow = this.attachShadow({ mode: "open" })
                 shadow.appendChild(template.content.cloneNode(true))
                 const detailElement = shadow.querySelector("details")
                 const slotElement = detailElement.children[1];
                 this.detailElement = detailElement;
                 this.slotElement = slotElement;
+                this.internals = this.attachInternals();
             }
             connectedCallback() {
                 const openKeyframe = this.dataset.openKeyframe;
@@ -62,7 +62,6 @@
                 this.detailElement.addEventListener("click", (e) => {
                     e.preventDefault();
                     const target = this.slotElement.assignedElements()[0];
-                    console.log(target)
                     if (target == null) {
                         return
                     }
@@ -70,12 +69,14 @@
                     if (this.detailElement.getAttribute("open") != null) {
                         target.style.setProperty("--animation-name", closeKeyframe)
                         const animating = target.animate(closingAnim(target), animOption)
+                        this.internals.states.delete("open")
                         animating.addEventListener("finish", () => {
                             this.detailElement.removeAttribute("open")
                         })
                         return
                     }
                     this.detailElement.setAttribute("open", "");
+                    this.internals.states.add("open")
                     target.style.setProperty("--animation-name", openKeyframe)
                     const animating = target.animate(openingAnim(target), animOption)
                 })
