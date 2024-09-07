@@ -1,4 +1,5 @@
 import HTMLString from "./index.html?raw";
+import styles from "./main.css?inline";
 import {
   InternalSingleState,
   CssAnimVariableState,
@@ -70,6 +71,9 @@ class AnimatedDetails extends HTMLElement {
     super();
     const template = document.createElement("template");
     template.innerHTML = HTMLString;
+    const styleEl = document.createElement("style");
+    styleEl.innerHTML = styles;
+    template.content.appendChild(styleEl);
     const shadow = this.attachShadow({ mode: "open" });
     shadow.appendChild(template.content.cloneNode(true));
     this.internal = this.attachInternals();
@@ -101,4 +105,5 @@ class AnimatedDetails extends HTMLElement {
     register4State(this, states);
   }
 }
-customElements.define("animated-details", AnimatedDetails);
+
+customElements.define("pure-animated-details", AnimatedDetails);

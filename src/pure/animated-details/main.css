@@ -1,0 +1,3 @@
+::slotted(*:not([slot=summary])) {
+    animation-name: var(--animation-name);
+}

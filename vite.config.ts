@@ -5,5 +5,8 @@ export default defineConfig({
   build: {
     emptyOutDir: false,
   },
+  css: {
+    transformer: "lightningcss",
+  },
   plugins: [HtmlRawImport()],
 });
