@@ -1,0 +1,11 @@
+<style>
+    ::slotted(*:not([slot=summary])) {
+        animation-name: var(--animation-name);
+    }
+</style>
+<details part="details">
+    <summary part="summary">
+        <slot name="summary"></slot>
+    </summary>
+    <slot></slot>
+</details>
