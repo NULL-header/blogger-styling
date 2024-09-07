@@ -4,80 +4,23 @@ import through2 from "through2";
 import UglifyJS from "uglify-js";
 import HTMLMinifier from "html-minifier";
 import path from "path";
+import { glob } from "node:fs/promises";
+import * as vite from "vite";
 
-const target = "src/**/*.html";
-
-const buildBase = (f) => () => {
-  return gulp
-    .src(target)
-    .pipe(
-      through2.obj((file, _, callback) => {
-        if (!file.isBuffer()) {
-          callback(null, file);
-          return;
-        }
-        const text = file.contents.toString();
-
-        const html = new JSDOM(text);
-        const document = html.window.document;
-        const schema = document.documentElement.attributes.schema;
-        if (schema == null || schema.value != "component") {
-          callback(null, file);
-          return;
-        }
-        const template = document.querySelector("template").innerHTML;
-        const script = document.querySelector("script").innerHTML;
-        f({ file, template, script });
-
-        callback(null, file);
-      })
-    )
-    .pipe(
-      gulp.dest((file) => {
-        const current = path.dirname(path.relative("./src", file.path));
-        if (current === ".") {
-          return "./dist/";
-        }
-        const newName = [
-          ...current.split(path.sep),
-          path.basename(file.path),
-        ].join("-");
-        file.path = newName;
-        file.dirname = "./dist/";
-        return "./dist/";
-      })
-    );
-};
-
-gulp.task(
-  "build:dev",
-  buildBase(({ file, template, script }) => {
-    const jsText = script.replace("__MARKER__", `\`${template}\``);
-    file.contents = Buffer.from(jsText);
-    file.extname = ".js";
-  })
-);
-
-gulp.task(
-  "build:prod",
-  buildBase(({ file, template, script }) => {
-    const minifiedHTML = HTMLMinifier.minify(template, {
-      removeAttributeQuotes: true,
-      collapseWhitespace: true,
-      trimCustomFragments: true,
-      minifyCSS: true,
-    });
-    const jsText = script.replace("__MARKER__", `\`${minifiedHTML}\``);
-
-    const result = UglifyJS.minify(jsText, {
-      warnings: true,
-      mangle: {
-        toplevel: true,
+gulp.task("build", async (cb) => {
+  console.log("hey");
+  for await (const entry of glob("src/*/*/index.ts")) {
+    console.log();
+    const result = await vite.build({
+      build: {
+        rollupOptions: {
+          input: entry,
+          output: {
+            entryFileNames:
+              entry.split(path.sep).slice(1, -1).join("-") + ".js",
+          },
+        },
       },
     });
-
-    if (result.error != null) throw result.error;
-    file.contents = Buffer.from(result.code);
-    file.extname = ".js";
-  })
-);
+  }
+});
