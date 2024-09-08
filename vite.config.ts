@@ -1,4 +1,4 @@
-import { defineConfig, rollupVersion } from "vite";
+import { defineConfig } from "vite";
 import type { UserConfig } from "vite";
 import HtmlRawImport from "./vite-plugin-html-import";
 import { deepmerge } from "deepmerge-ts";
@@ -72,9 +72,6 @@ const dev = {
   },
 } satisfies UserConfig;
 
-export default defineConfig(({ command, mode }) => {
-  if (command === "build") {
-    return deepmerge(common, build, mode === "localcheck" ? prod : prod);
-  }
-  return deepmerge(common, dev);
+export default defineConfig(({ command }) => {
+  return deepmerge(common, command === "build" ? prod : dev);
 });
