@@ -1,5 +1,4 @@
 import HTMLMinifier from "html-minifier";
-import "./env-type";
 
 const IMPORT_PATH = /^.*\.html\?raw$/;
 
