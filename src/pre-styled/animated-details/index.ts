@@ -21,6 +21,13 @@ class AnimatedDetails extends HTMLElement {
     const title = this.dataset.title;
     if (title == null) return;
     this.summary.innerHTML = title;
+    const initialOpen = this.dataset.open;
+    if (initialOpen != null) {
+      const animatedDetails = this.shadowRoot!.querySelector(
+        "pure-animated-details"
+      ) as HTMLElement;
+      animatedDetails.dataset.open = initialOpen;
+    }
   }
 }
 

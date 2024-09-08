@@ -63,10 +63,10 @@ const register4State = (eventTarget: AnimatedDetails, states: States) => {
   });
 };
 
+type LiveStates = Pick<States, "details" | "internal">;
+
 class AnimatedDetails extends HTMLElement {
-  private readonly detailElement: HTMLDetailsElement;
-  private readonly slotElement: HTMLSlotElement;
-  private readonly internal: ElementInternals;
+  private states!: LiveStates;
   constructor() {
     super();
     const template = document.createElement("template");
@@ -76,21 +76,22 @@ class AnimatedDetails extends HTMLElement {
     template.content.appendChild(styleEl);
     const shadow = this.attachShadow({ mode: "open" });
     shadow.appendChild(template.content.cloneNode(true));
-    this.internal = this.attachInternals();
-
-    const detailElement = shadow.querySelector("details")!;
-    const slotElement = detailElement.children[1];
-    this.detailElement = detailElement;
-    this.slotElement = slotElement as HTMLSlotElement;
   }
   connectedCallback() {
+    const shadow = this.shadowRoot!;
+    const internal = this.attachInternals();
+
+    const detailElement = shadow.querySelector("details")!;
+    const slotElement = detailElement.children[1] as HTMLSlotElement;
+
     const openKeyframe = this.dataset.openKeyframe!;
     const closeKeyframe = this.dataset.closeKeyframe!;
-    const target = this.slotElement.assignedElements()[0] as HTMLElement;
+    const target = slotElement.assignedElements()[0] as HTMLElement;
 
     if ([openKeyframe, closeKeyframe, target].every((e) => e == null)) {
       return;
     }
+
     const states: States = {
       anim: new AnimState(target),
       cssVariable: new CssAnimVariableState(
@@ -98,11 +99,34 @@ class AnimatedDetails extends HTMLElement {
         openKeyframe,
         target
       ),
-      details: new DetailsState(this.detailElement),
-      internal: new InternalSingleState("open", this.internal),
+      details: new DetailsState(detailElement),
+      internal: new InternalSingleState("open", internal),
     };
 
     register4State(this, states);
+
+    this.states = {
+      details: states.details,
+      internal: states.internal,
+    };
+  }
+
+  static get observedAttributes() {
+    return ["data-open"];
+  }
+
+  attributeChangedCallback(name: string, _: string, newValue: string) {
+    switch (name) {
+      case "data-open":
+        if (newValue != null) {
+          console.log("hey!");
+          this.states.details.turnOn();
+          this.states.internal.turnOn();
+        } else {
+          this.states.details.turnOff();
+          this.states.internal.turnOff();
+        }
+    }
   }
 }
 
