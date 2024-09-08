@@ -1,5 +1,5 @@
-import HTMLString from "./index.html?raw";
-import styles from "./main.css?inline";
+import htmlString from "./index.html?raw";
+import style from "./main.css?inline";
 import {
   InternalSingleState,
   CssAnimVariableState,
@@ -13,6 +13,7 @@ interface States {
   details: DetailsState;
   anim: AnimState;
 }
+import { AbsWebComponent } from "src/utils/abs-web-component";
 
 type EventNames = "openstart" | "openend" | "closestart" | "closeend";
 
@@ -65,17 +66,10 @@ const register4State = (eventTarget: AnimatedDetails, states: States) => {
 
 type LiveStates = Pick<States, "details" | "internal">;
 
-class AnimatedDetails extends HTMLElement {
+class AnimatedDetails extends AbsWebComponent {
   private states!: LiveStates;
   constructor() {
-    super();
-    const template = document.createElement("template");
-    template.innerHTML = HTMLString;
-    const styleEl = document.createElement("style");
-    styleEl.innerHTML = styles;
-    template.content.appendChild(styleEl);
-    const shadow = this.attachShadow({ mode: "open" });
-    shadow.appendChild(template.content.cloneNode(true));
+    super({ htmlString, style, shadowMode: "open" });
   }
   connectedCallback() {
     const shadow = this.shadowRoot!;

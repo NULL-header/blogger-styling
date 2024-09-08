@@ -1,26 +1,20 @@
-import HTMLString from "./index.html?raw";
-import styles from "./main.css?inline";
+import htmlString from "./index.html?raw";
+import style from "./main.css?inline";
 import "@/pure_animated-details.js";
+import { AbsWebComponent } from "src/utils/abs-web-component";
 
-class AnimatedDetails extends HTMLElement {
-  private summary: HTMLElement;
+class AnimatedDetails extends AbsWebComponent {
   constructor() {
-    super();
-    const template = document.createElement("template");
-    template.innerHTML = HTMLString;
-    const styleEl = document.createElement("style");
-    styleEl.innerHTML = styles;
-    template.content.appendChild(styleEl);
-    const shadow = this.attachShadow({ mode: "open" });
-    shadow.appendChild(template.content.cloneNode(true));
-    const summary = shadow.querySelector("*[data-title]") as HTMLElement;
-    this.summary = summary;
+    super({ htmlString, style, shadowMode: "open" });
   }
 
   connectedCallback() {
+    const summary = this.shadowRoot!.querySelector(
+      "*[data-title]"
+    ) as HTMLElement;
     const title = this.dataset.title;
     if (title == null) return;
-    this.summary.innerHTML = title;
+    summary.innerHTML = title;
     const initialOpen = this.dataset.open;
     if (initialOpen != null) {
       const animatedDetails = this.shadowRoot!.querySelector(
