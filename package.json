@@ -4,28 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "gulp build",
+    "build": "vite build",
+    "localcheck": "vite build --mode localcheck",
     "dev": "vite",
     "projectpublish": "pnpm build && pnpm publish"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "gulp": "^5.0.0",
-    "html-minifier": "^4.0.0",
-    "jsdom": "^25.0.0",
-    "through2": "^4.0.2",
-    "typescript": "^5.5.4",
-    "uglify-js": "^3.19.3",
-    "vite": "^5.4.2"
-  },
+  "dependencies": {},
   "files": [
     "dist"
   ],
   "type": "module",
   "packageManager": "pnpm@9.8.0+sha1.33f415ae4331f9b29a92dd9bbef959b916d65535",
   "devDependencies": {
-    "lightningcss": "^1.26.0"
+    "deepmerge-ts": "^7.1.0",
+    "lightningcss": "^1.26.0",
+    "@types/node": "^22.5.4",
+    "html-minifier": "^4.0.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.2"
   }
 }

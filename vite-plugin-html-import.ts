@@ -1,4 +1,5 @@
 import HTMLMinifier from "html-minifier";
+import "./env-type";
 
 const IMPORT_PATH = /^.*\.html\?raw$/;
 
@@ -17,7 +18,6 @@ export default function HtmlRawImport() {
             removeAttributeQuotes: true,
             collapseWhitespace: true,
             trimCustomFragments: true,
-            minifyCSS: true,
             quoteCharacter: "'",
           }
         ),
