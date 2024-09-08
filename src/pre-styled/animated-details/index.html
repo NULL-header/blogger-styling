@@ -1,0 +1,13 @@
+<pure-animated-details data-open-keyframe="openAnim" data-close-keyframe="closeAnim">
+    <div slot="summary" part="title-outer">
+        <p data-title part="title"></p>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" height="100%" width="100%" viewBox="0 -960 960 960" fill="#e8eaed">
+                <path d="M480-344 240-584l47.33-47.33L480-438.67l192.67-192.66L720-584 480-344Z" />
+            </svg>
+        </div>
+    </div>
+    <div class="outer" part="content-outer">
+        <slot part="content"></slot>
+    </div>
+</pure-animated-details>

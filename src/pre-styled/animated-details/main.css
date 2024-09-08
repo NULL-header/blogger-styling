@@ -1,0 +1,66 @@
+@keyframes openAnim {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+}
+
+@keyframes closeAnim {
+    from {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+}
+
+div[part="content-outer"] {
+    animation-duration: 200ms;
+    animation-timing-function: ease-in-out;
+    margin: 0;
+}
+
+pure-animated-details::part(summary) {
+    list-style: none;
+    cursor: pointer;
+}
+
+div[slot=summary] {
+    height: max-content;
+    display: flex;
+    align-items: center;
+
+    p {
+        flex-grow: 1;
+    }
+
+    div {
+        height: 1.2em;
+        margin-right: 10%;
+    }
+
+    path {
+        transform: translateX(-40%) translateY(50%) scale(180%);
+    }
+
+    svg {
+        height: 100%;
+        transform: rotate(0deg);
+        transition-property: transform;
+        transition-duration: 200ms;
+        transition-timing-function: ease-in-out;
+    }
+
+    pure-animated-details:state(open) & svg {
+        transform: rotate(180deg);
+
+    }
+}
