@@ -2,6 +2,12 @@ import { AbsSingleFlgState } from "./abs-state";
 import { closingAnim, getAnimOption, openingAnim } from "./anim";
 import type { AnimFunc } from "./anim";
 
+/**
+ * Manages the internal state of a Web Component's ElementInternals.
+ *
+ * This class interacts with the internal `states` of the Web Component
+ * to turn on or off a specific state by name.
+ */
 export class InternalSingleState extends AbsSingleFlgState {
   constructor(
     private readonly stateName: string,
@@ -17,6 +23,16 @@ export class InternalSingleState extends AbsSingleFlgState {
   }
 }
 
+/**
+ * Injects the CSS variable "--animation-name" to control animations.
+ *
+ * ## Note
+ *
+ * turn**On** -> fire **open**Keyframe
+ *
+ * turn**Off** -> fire **close**Keyframe
+ *
+ */
 export class CssAnimVariableState extends AbsSingleFlgState {
   constructor(
     private readonly closeKeyframe: string,
@@ -34,6 +50,9 @@ export class CssAnimVariableState extends AbsSingleFlgState {
   }
 }
 
+/**
+ * Manages the "open" attribute of the passed HTMLDetailsElement.
+ */
 export class DetailsState extends AbsSingleFlgState {
   constructor(public readonly detailEl: HTMLDetailsElement) {
     super();
@@ -41,6 +60,9 @@ export class DetailsState extends AbsSingleFlgState {
   turnOn(): void {
     this.detailEl.setAttribute("open", "");
   }
+  /**
+   * When this is called, any ongoing animation will be skipped.
+   */
   turnOff(): void {
     this.detailEl.removeAttribute("open");
   }
@@ -51,6 +73,23 @@ export class DetailsState extends AbsSingleFlgState {
 
 export type AnimStateEventNames = "finishturnon" | "finishturnoff";
 
+/**
+ * Manages the state of animations, typically vertical animations.
+ *
+ * The keyframes for this animation are defined in `./anim.ts`.
+ *
+ * ## Events
+ * - `finishturnon`: Triggered when the opening animation finishes.
+ * - `finishturnoff`: Triggered when the closing animation finishes.
+ *
+ * These events can be used for additional side effects upon
+ *
+ * the completion of animations.
+ *
+ * the event is used for attribute state of details
+ *
+ * because the native logic at "open" attribute stops this animation.
+ */
 export class AnimState extends AbsSingleFlgState {
   private readonly eventer: EventTarget;
   constructor(private readonly targetEl: HTMLElement) {
